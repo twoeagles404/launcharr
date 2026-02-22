@@ -5293,6 +5293,9 @@ app.post('/apps/:id/settings', requireAdmin, (req, res) => {
       viewerPassword: isDisplayOnlyUpdate
         ? appItem.viewerPassword || ''
         : (req.body.viewerPassword !== undefined ? req.body.viewerPassword : (appItem.viewerPassword || '')),
+      rommRecentProbeLimit: isDisplayOnlyUpdate
+        ? (appItem.rommRecentProbeLimit ?? '')
+        : (req.body.rommRecentProbeLimit !== undefined ? req.body.rommRecentProbeLimit : (appItem.rommRecentProbeLimit ?? '')),
       plexToken: (() => {
         if (isDisplayOnlyUpdate) return appItem.plexToken || '';
         const nextToken = req.body.plexToken !== undefined ? req.body.plexToken : (appItem.plexToken || '');
@@ -10014,19 +10017,26 @@ app.get('/api/romm/:kind', requireUser, async (req, res) => {
       { path: 'api/systems' },
       { path: 'api/v1/systems' },
     ]
-    : [
-      { path: 'api/games/recent', query: { limit: '200' } },
-      { path: 'api/v1/games/recent', query: { limit: '200' } },
-      { path: 'api/games/recently-added', query: { limit: '200' } },
-      { path: 'api/v1/games/recently-added', query: { limit: '200' } },
-      { path: 'api/roms/recent', query: { limit: '200' } },
-      { path: 'api/roms/recently-added', query: { limit: '200' } },
-      { path: 'api/roms', query: { order_by: 'id', order_dir: 'desc', with_char_index: 'false', with_filter_values: 'false', limit: '200' } },
-      { path: 'api/roms', query: { order_by: 'updated_at', order_dir: 'desc', with_char_index: 'false', with_filter_values: 'false', limit: '200' } },
-      { path: 'api/roms', query: { order_by: 'created_at', order_dir: 'desc', with_char_index: 'false', with_filter_values: 'false', limit: '200' } },
-      { path: 'api/roms', query: { sort: 'created_at', order: 'desc', limit: '200' } },
-      { path: 'api/v1/roms', query: { sort: 'created_at', order: 'desc', limit: '200' } },
-    ];
+    : (() => {
+      const configuredProbeLimit = Number(rommApp?.rommRecentProbeLimit);
+      const probeLimit = Number.isFinite(configuredProbeLimit) && configuredProbeLimit > 0
+        ? Math.min(200, Math.max(50, Math.round(configuredProbeLimit)))
+        : 50;
+      const probeLimitText = String(probeLimit);
+      return [
+        { path: 'api/games/recent', query: { limit: probeLimitText } },
+        { path: 'api/v1/games/recent', query: { limit: probeLimitText } },
+        { path: 'api/games/recently-added', query: { limit: probeLimitText } },
+        { path: 'api/v1/games/recently-added', query: { limit: probeLimitText } },
+        { path: 'api/roms/recent', query: { limit: probeLimitText } },
+        { path: 'api/roms/recently-added', query: { limit: probeLimitText } },
+        { path: 'api/roms', query: { order_by: 'id', order_dir: 'desc', with_char_index: 'false', with_filter_values: 'false', limit: probeLimitText } },
+        { path: 'api/roms', query: { order_by: 'updated_at', order_dir: 'desc', with_char_index: 'false', with_filter_values: 'false', limit: probeLimitText } },
+        { path: 'api/roms', query: { order_by: 'created_at', order_dir: 'desc', with_char_index: 'false', with_filter_values: 'false', limit: probeLimitText } },
+        { path: 'api/roms', query: { sort: 'created_at', order: 'desc', limit: probeLimitText } },
+        { path: 'api/v1/roms', query: { sort: 'created_at', order: 'desc', limit: probeLimitText } },
+      ];
+    })();
 
   let lastError = '';
   for (let candidateIndex = 0; candidateIndex < candidates.length; candidateIndex += 1) {
@@ -10078,7 +10088,15 @@ app.get('/api/romm/:kind', requireUser, async (req, res) => {
         } else {
           ordered = mapped
             .slice()
-            .sort((leftEntry, rightEntry) => Number(leftEntry?.sourceIndex || 0) - Number(rightEntry?.sourceIndex || 0))
+            .sort((leftEntry, rightEntry) => {
+              const leftSort = parseFiniteNumber(leftEntry?.item?.sortTs, 0);
+              const rightSort = parseFiniteNumber(rightEntry?.item?.sortTs, 0);
+              if (rightSort !== leftSort) return rightSort - leftSort;
+              const leftSourceIndex = Number(leftEntry?.sourceIndex || 0);
+              const rightSourceIndex = Number(rightEntry?.sourceIndex || 0);
+              if (leftSourceIndex !== rightSourceIndex) return leftSourceIndex - rightSourceIndex;
+              return String(leftEntry?.item?.title || '').localeCompare(String(rightEntry?.item?.title || ''));
+            })
             .map(({ item }) => item);
         }
         const requestedLimitRaw = String(req.query?.limit || '').trim().toLowerCase();

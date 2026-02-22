@@ -1,4 +1,14 @@
-# Release Notes (v0.1.0 -> v0.2.38)
+# Release Notes (v0.1.0 -> v0.2.39)
+
+## v0.2.39 (2026-02-22)
+
+- [Added]
+- Added Romm `Recently Added Probe Limit` setting (50-200) in Romm settings (both settings pages via shared form).
+- [Changed]
+- Moved theme toggle into the Launcharr brand menu and replaced the top-right theme button with a Buy Me a Coffee heart link.
+- Reduced default Romm recently-added API probe size from `200` to `50` (configurable) and updated recent ordering to prioritize parsed timestamps.
+- [Fixed]
+- Improved Romm recently-added ordering consistency between backend normalization and the Romm overview UI.
 
 ## v0.2.38 (2026-02-22)
 

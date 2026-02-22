@@ -2155,12 +2155,44 @@ html[data-hide-scrollbars="1"] .dash-main::-webkit-scrollbar{
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
   cursor:pointer;
   padding:0;
+  color:inherit;
+  text-decoration:none;
 }
 
 .theme-toggle-icon{
   width:14px;
   height:14px;
   display:block;
+}
+
+.theme-toggle--support{
+  width:45px;
+  height:45px;
+  color:#ff6b96;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+}
+
+.theme-toggle--support:hover{
+  color:#ff7aa1;
+  transform:translateY(-1px) scale(1.03);
+}
+
+.theme-toggle--support .theme-toggle-icon{
+  width:32px;
+  height:32px;
+  filter:
+    drop-shadow(0 0 2px rgba(0,0,0,.35))
+    drop-shadow(0 0 8px var(--on-brand, #ffffff))
+    drop-shadow(0 0 14px rgba(255,107,150,.65));
+}
+
+html[data-theme="day"] .theme-toggle--support .theme-toggle-icon{
+  filter:
+    drop-shadow(0 0 2px rgba(8,16,19,.62))
+    drop-shadow(0 0 8px rgba(8,16,19,.38))
+    drop-shadow(0 0 12px rgba(255,107,150,.42));
 }
 
 .version-badge{

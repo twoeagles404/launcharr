@@ -110,6 +110,20 @@
           <input type="password" name="password" value="<%= renderedApp.password || '' %>" placeholder="<%= renderedAppName %> password" />
         </label>
         <% if (renderedAppBaseId === 'romm') { %>
+          <label class="field">
+            <span>Recently Added Probe Limit</span>
+            <input
+              type="number"
+              name="rommRecentProbeLimit"
+              value="<%= renderedApp.rommRecentProbeLimit ?? '' %>"
+              min="50"
+              max="200"
+              step="1"
+              placeholder="50"
+            />
+          </label>
+        <% } %>
+        <% if (renderedAppBaseId === 'romm') { %>
           <div class="plex-settings-actions">
             <button class="ghost-button" type="button" data-romm-test-session="admin">Test Admin Session</button>
           </div>
@@ -117,6 +131,7 @@
       </div>
       <div class="plex-settings-note">Tip: Leave blank if authentication is disabled.</div>
       <% if (renderedAppBaseId === 'romm') { %>
+        <div class="plex-settings-note">Optional: controls Romm recently-added API probe size for Launcharr retrieval. Allowed range: 50-200. Leave blank to use 50.</div>
         <div class="plex-settings-note">This can potentially fix Romm login loops when launching from Launcharr through a reverse proxy by priming Romm session cookies before opening the app.</div>
         <div class="plex-settings-note" data-romm-test-status="admin" hidden aria-live="polite"></div>
       <% } %>

@@ -21,6 +21,7 @@
   };
 
   const storageKeys = {
+    theme: 'launcharr-theme',
     bgMotion: 'launcharr-bg-motion',
     maximized: 'launcharr-maximized-window',
   };
@@ -50,6 +51,10 @@
     + '</button>'
     + '<div class="dash-brand-menu-popover" hidden>'
     + '  <div class="dash-brand-menu-heading">Settings</div>'
+    + '  <button class="dash-brand-menu-item" type="button" data-action="theme">'
+    + '    <img class="dash-brand-menu-item-icon" src="/icons/moon.svg" alt="" data-icon="theme" />'
+    + '    <span class="dash-brand-menu-item-label" data-label="theme">Switch to Light Mode</span>'
+    + '  </button>'
     + '  <button class="dash-brand-menu-item" type="button" data-action="bg-motion">'
     + '    <svg class="dash-brand-menu-item-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
     + '      <path fill="currentColor" d="M12 4.2l1.15 2.73 2.73 1.15-2.73 1.15L12 12l-1.15-2.77-2.73-1.15 2.73-1.15L12 4.2z" />'
@@ -66,13 +71,25 @@
 
   const toggle = wrapper.querySelector('.dash-brand-menu-toggle');
   const menu = wrapper.querySelector('.dash-brand-menu-popover');
+  const themeBtn = wrapper.querySelector('[data-action="theme"]');
   const motionBtn = wrapper.querySelector('[data-action="bg-motion"]');
   const maximizeBtn = wrapper.querySelector('[data-action="maximize"]');
+  const themeLabel = wrapper.querySelector('[data-label="theme"]');
   const motionLabel = wrapper.querySelector('[data-label="bg-motion"]');
   const maximizeLabel = wrapper.querySelector('[data-label="maximize"]');
+  const themeIcon = wrapper.querySelector('[data-icon="theme"]');
   const maximizeIcon = wrapper.querySelector('[data-icon="maximize"]');
-  if (!toggle || !menu || !motionBtn || !maximizeBtn || !motionLabel || !maximizeLabel || !maximizeIcon) return;
+  if (!toggle || !menu || !themeBtn || !motionBtn || !maximizeBtn || !themeLabel || !motionLabel || !maximizeLabel || !themeIcon || !maximizeIcon) return;
 
+  const getThemeMode = () => root.dataset.theme === 'day' ? 'day' : 'night';
+  const applyTheme = (theme) => {
+    const mode = theme === 'day' ? 'day' : 'night';
+    root.dataset.theme = mode;
+    if (document.body) {
+      document.body.dataset.theme = mode;
+    }
+    safeStorage.set(storageKeys.theme, mode);
+  };
   const isMotionPreferredEnabled = () => root.dataset.bgMotion !== '0';
   const isMaximized = () => root.dataset.maximized === '1';
   const isMobileView = () => Boolean(mobileMotionQuery && mobileMotionQuery.matches);
@@ -87,6 +104,9 @@
   };
 
   const updateLabels = () => {
+    const themeMode = getThemeMode();
+    themeLabel.textContent = themeMode === 'day' ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+    themeIcon.src = themeMode === 'day' ? '/icons/sun.svg' : '/icons/moon.svg';
     const motionPreferredEnabled = isMotionPreferredEnabled();
     const motionLocked = isMotionLocked();
     motionLabel.textContent = motionPreferredEnabled ? 'Disable Starfield' : 'Enable Starfield';
@@ -117,6 +137,13 @@
     event.stopPropagation();
     if (menu.hidden) openMenu();
     else closeMenu();
+  });
+
+  themeBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    applyTheme(getThemeMode() === 'day' ? 'night' : 'day');
+    updateLabels();
+    closeMenu();
   });
 
   motionBtn.addEventListener('click', (event) => {

@@ -634,14 +634,14 @@
           if (!Number.isFinite(leftSourceIndex)) leftSourceIndex = 0;
           if (!Number.isFinite(rightSourceIndex)) rightSourceIndex = 0;
           if (selectedSort === 'oldest') {
-            if (leftSourceIndex !== rightSourceIndex) return rightSourceIndex - leftSourceIndex;
             if (leftSort !== rightSort) return leftSort - rightSort;
+            if (leftSourceIndex !== rightSourceIndex) return rightSourceIndex - leftSourceIndex;
             return leftTitle.localeCompare(rightTitle);
           }
           if (selectedSort === 'a-z') return leftTitle.localeCompare(rightTitle);
           if (selectedSort === 'z-a') return rightTitle.localeCompare(leftTitle);
-          if (leftSourceIndex !== rightSourceIndex) return leftSourceIndex - rightSourceIndex;
           if (rightSort !== leftSort) return rightSort - leftSort;
+          if (leftSourceIndex !== rightSourceIndex) return leftSourceIndex - rightSourceIndex;
           return leftTitle.localeCompare(rightTitle);
         });
       }

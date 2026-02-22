@@ -1155,6 +1155,7 @@
     "password": "",
     "viewerUsername": "",
     "viewerPassword": "",
+    "rommRecentProbeLimit": "",
     "menu": {
       "overview": {
         "user": true,

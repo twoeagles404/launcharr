@@ -2,49 +2,24 @@
   const status = document.querySelector('.main-window-status');
   if (!status) return;
   const releaseBase = 'https://github.com/MickyGX/launcharr/releases/tag/';
+  const supportUrl = 'https://buymeacoffee.com/mickygx';
   const dot = status.querySelector('.status-dot');
-  const toggle = document.createElement('button');
-  const icon = document.createElement('img');
-
-  toggle.type = 'button';
-  toggle.className = 'theme-toggle';
-  toggle.setAttribute('aria-label', 'Toggle theme');
-  toggle.setAttribute('aria-pressed', 'false');
-  icon.className = 'theme-toggle-icon';
-  icon.alt = '';
-  toggle.appendChild(icon);
-
-  const applyTheme = (theme) => {
-    const mode = theme === 'day' ? 'day' : 'night';
-    document.documentElement.dataset.theme = mode;
-    if (document.body) {
-      document.body.dataset.theme = mode;
-    }
-    icon.src = mode === 'day' ? '/icons/sun.svg' : '/icons/moon.svg';
-    toggle.setAttribute('aria-pressed', mode === 'day' ? 'true' : 'false');
-  };
-
-  const stored = localStorage.getItem('launcharr-theme');
-  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-  const bootstrapped = document.documentElement?.dataset?.theme;
-  const initial = stored
-    || (bootstrapped === 'day' || bootstrapped === 'night' ? bootstrapped : '')
-    || (prefersLight ? 'day' : 'night');
-  applyTheme(initial);
-  if (!stored && (initial === 'day' || initial === 'night')) {
-    localStorage.setItem('launcharr-theme', initial);
-  }
-
-  toggle.addEventListener('click', () => {
-    const next = document.documentElement.dataset.theme === 'day' ? 'night' : 'day';
-    applyTheme(next);
-    localStorage.setItem('launcharr-theme', next);
-  });
+  const supportLink = document.createElement('a');
+  supportLink.className = 'theme-toggle theme-toggle--support';
+  supportLink.href = supportUrl;
+  supportLink.target = '_blank';
+  supportLink.rel = 'noreferrer noopener';
+  supportLink.setAttribute('aria-label', 'Buy Me a Coffee');
+  supportLink.title = 'Buy Me a Coffee';
+  supportLink.innerHTML = ''
+    + '<svg class="theme-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+    + '  <path fill="currentColor" d="M12 20.6l-1.2-1.08C5.84 15.08 3 12.52 3 9.38 3 6.82 5.02 5 7.44 5c1.37 0 2.69.65 3.56 1.68C11.87 5.65 13.19 5 14.56 5 16.98 5 19 6.82 19 9.38c0 3.14-2.84 5.7-7.8 10.14L12 20.6z"/>'
+    + '</svg>';
 
   if (dot) {
-    status.insertBefore(toggle, dot);
+    status.insertBefore(supportLink, dot);
   } else {
-    status.appendChild(toggle);
+    status.appendChild(supportLink);
   }
 
   const switchViewLink = document.querySelector('.user-menu-item[href^="/switch-view?role="]');
