@@ -42,3 +42,8 @@ scripts/publish-wiki.sh --dry-run
 ```
 
 The publish script also syncs screenshot assets from `docs/media/` into the wiki repo under `media/`, and rewrites wiki page image links to use `media/...` paths.
+
+Authoring note:
+
+- Prefer markdown image links that point to `../media/...` in source pages.
+- Avoid relative HTML image paths like `../../public/icons/...`; the `.wiki` repo does not include `public/`.

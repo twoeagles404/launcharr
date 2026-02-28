@@ -28,7 +28,7 @@ Important fields:
 
 `Settings -> Display` controls:
 
-- App visibility by role.
+- App and module visibility by role (`guest`, `user`, `co-admin`, `admin`).
 - Overview and launch permission toggles.
 - Launch mode per app:
   - `iframe`
@@ -37,6 +37,8 @@ Important fields:
 - Category assignment and ordering.
 - Combined Arr/downloader dashboard sections.
 - Queue column visibility and row limits.
+- Dashboard visibility roles and ordering.
+- Widget bars and widget row layout.
 
 ## App Credentials and Integrations
 
@@ -68,8 +70,12 @@ Plex-based role assignment is managed in `Settings -> Users`.
 - `appriseTargets`
 - `appriseConfigKey`
 - `appriseTag`
+- `widgetStatusEnabled`
+- `widgetStatusDelaySeconds`
 
 Use `Test Notification` to validate routing before rollout.
+
+When enabled, widget status monitoring can trigger Apprise notifications after a delay threshold for state changes (online/offline).
 
 ## Logs
 
@@ -107,7 +113,9 @@ Persisted file:
     "appriseMode": "targets",
     "appriseTargets": "",
     "appriseConfigKey": "",
-    "appriseTag": ""
+    "appriseTag": "",
+    "widgetStatusEnabled": false,
+    "widgetStatusDelaySeconds": 60
   }
 }
 ```

@@ -43,7 +43,8 @@ Notes:
 
 - Role enforcement is route-level (`requireUser`, `requireAdmin`, `requireSettingsAdmin`).
 - `co-admin` cannot access settings routes.
-- Admin can switch to user-view mode via `/switch-view?role=user` to preview user experience.
+- Admin can switch view mode via `/switch-view?role=guest|user|co-admin|admin` to preview role experiences.
+- `guest` is a visibility/view role for dashboards/modules, not a standalone authenticated account role.
 
 ## Role Storage
 

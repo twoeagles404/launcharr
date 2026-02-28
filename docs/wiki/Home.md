@@ -49,14 +49,16 @@ Use this wiki as the operational source of truth for setup, roles, and rollout.
 - Role-aware visibility for admins and non-admin users.
 - Configurable dashboard modules and app launch behavior.
 - Unified UX for settings, activity, and quick app access.
+- Built-in catalog of 48 opt-in app integrations plus custom apps.
 
 ## Key Product Capabilities
 
 - Plex SSO flow with local fallback admin account.
-- Admin, co-admin, and user role model.
+- Admin, co-admin, and user role model, with guest visibility controls for dashboards/modules.
 - Per-app menu permissions and launch modes (`iframe`, `new-tab`, `disabled`).
 - Built-in app catalog with custom app/category support.
-- Optional Apprise notifications and built-in logs.
+- Multi-dashboard layouts with widget bars and stat cards.
+- Optional Apprise notifications (including widget status monitoring) and built-in logs.
 
 ## Operational Endpoints
 

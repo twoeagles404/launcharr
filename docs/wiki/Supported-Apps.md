@@ -1,54 +1,104 @@
 # Supported Apps
 
-This page lists Launcharr supported integrations, grouped by type, starting with Plex.
+Source of truth:
 
-## Media and Plex Ecosystem
+- App inventory: `config/default-apps.json`
+- Overview modules: `APP_OVERVIEW_ELEMENTS` in `src/index.js`
+- Widget stat types: `WIDGET_STAT_TYPES` in `src/index.js`
 
-| Icon | App | ID | Major Integration Features |
-| --- | --- | --- | --- |
-| <img src="../../public/icons/plex.png" alt="Plex" width="20" /> | Plex | `plex` | Plex SSO login flow<br>Active streams / Recently added / Watchlisted cards<br>Plex user sync + role assignment |
-| <img src="../../public/icons/jellyfin.png" alt="Jellyfin" width="20" /> | Jellyfin | `jellyfin` | Active streams + Recently added cards<br>Combined media card support<br>Artwork proxy/fallback handling |
-| <img src="../../public/icons/emby.png" alt="Emby" width="20" /> | Emby | `emby` | Active streams + Recently added cards<br>Combined media card support |
-| <img src="../../public/icons/tautulli.png" alt="Tautulli" width="20" /> | Tautulli | `tautulli` | Watch statistics cards<br>Watch statistics wheel card |
+Current built-in catalog totals:
 
-## ARR Suite (Core Library Management)
+- `48` app definitions.
+- `26` with overview modules plus widget stats.
+- `6` with widget stats only.
+- `16` launch/settings only.
 
-| Icon | App | ID | Major Integration Features |
-| --- | --- | --- | --- |
-| <img src="../../public/icons/radarr.png" alt="Radarr" width="20" /> | Radarr | `radarr` | Downloading soon / Recently downloaded cards<br>Activity queue table + sorting + pagination<br>Calendar card |
-| <img src="../../public/icons/sonarr.png" alt="Sonarr" width="20" /> | Sonarr | `sonarr` | Downloading soon / Recently downloaded cards<br>Calendar card |
-| <img src="../../public/icons/lidarr.png" alt="Lidarr" width="20" /> | Lidarr | `lidarr` | Downloading soon / Recently downloaded cards<br>Calendar card |
-| <img src="../../public/icons/readarr.png" alt="Readarr" width="20" /> | Readarr | `readarr` | Downloading soon / Recently downloaded cards<br>Activity queue table + sorting + pagination<br>Calendar card |
-| <img src="../../public/icons/bazarr.png" alt="Bazarr" width="20" /> | Bazarr | `bazarr` | Subtitle queue table card<br>Type/status filters + paging controls |
+## Overview Module Matrix
 
-## Indexers and Search
+| App | ID | Overview Modules |
+| --- | --- | --- |
+| Plex | `plex` | Active Streams, Recently Added, Most Watchlisted This Week |
+| Jellyfin | `jellyfin` | Active Streams, Recently Added |
+| Emby | `emby` | Active Streams, Recently Added |
+| Tautulli | `tautulli` | Watch Statistics |
+| Radarr | `radarr` | Downloading Soon, Recently Downloaded, Activity Queue, Calendar |
+| Sonarr | `sonarr` | Downloading Soon, Recently Downloaded, Activity Queue, Calendar |
+| Lidarr | `lidarr` | Downloading Soon, Recently Downloaded, Activity Queue, Calendar |
+| Readarr | `readarr` | Downloading Soon, Recently Downloaded, Activity Queue, Calendar |
+| Bazarr | `bazarr` | Subtitle Queue |
+| Prowlarr | `prowlarr` | Indexer Search |
+| Jackett | `jackett` | Indexer Search |
+| Pulsarr | `pulsarr` | Recent Requests, Most Watchlisted |
+| Seerr | `seerr` | Recent Requests, Most Watchlisted |
+| Autobrr | `autobrr` | Releases, Delivery Queue |
+| Maintainerr | `maintainerr` | Library Media, Rules, Collections Media |
+| Transmission | `transmission` | Download Queue |
+| qBittorrent | `qbittorrent` | Download Queue |
+| SABnzbd | `sabnzbd` | Download Queue |
+| NZBGet | `nzbget` | Download Queue |
+| Romm | `romm` | Recently Added, Consoles |
+| Immich | `immich` | Recently Added |
+| MeTube | `metube` | Download Queue |
+| Audiobookshelf | `audiobookshelf` | Recently Added |
+| Tdarr | `tdarr` | Statistics |
+| Wizarr | `wizarr` | Users, Invitations |
+| Uptime Kuma | `uptime-kuma` | Status Page |
 
-| Icon | App | ID | Major Integration Features |
-| --- | --- | --- | --- |
-| <img src="../../public/icons/prowlarr.png" alt="Prowlarr" width="20" /> | Prowlarr | `prowlarr` | Indexer search table card<br>Indexer/category filter popover<br>Numeric paging + result actions |
-| <img src="../../public/icons/jackett.png" alt="Jackett" width="20" /> | Jackett | `jackett` | Major default integration (v0.2.14)<br>Indexer search card parity with Prowlarr<br>Numeric paging + filter support |
+## Full Catalog and Support Levels
 
-## Requests and Automation
-
-| Icon | App | ID | Major Integration Features |
-| --- | --- | --- | --- |
-| <img src="../../public/icons/pulsarr.png" alt="Pulsarr" width="20" /> | Pulsarr | `pulsarr` | Recent requests card<br>Most watchlisted card |
-| <img src="../../public/icons/seerr.png" alt="Seerr" width="20" /> | Seerr | `seerr` | Recent requests card<br>Most watchlisted card |
-| <img src="../../public/icons/autobrr.png" alt="Autobrr" width="20" /> | Autobrr | `autobrr` | Major default integration (v0.2.14)<br>Recent matches + Delivery queue table cards<br>Status filtering support |
-| <img src="../../public/icons/maintainerr.svg" alt="Maintainerr" width="20" /> | Maintainerr | `maintainerr` | Library media carousel card (Movie/TV + A-Z filters)<br>Rules card with execute action<br>Collections media carousel card with in-card collection filter |
-| <img src="../../public/icons/cleanuparr.png" alt="Cleanuparr" width="20" /> | Cleanuparr | `cleanuparr` | App launch + settings integration |
-| <img src="../../public/icons/huntarr.png" alt="Huntarr" width="20" /> | Huntarr | `huntarr` | App launch + settings integration |
-
-## Download Clients
-
-| Icon | App | ID | Major Integration Features |
-| --- | --- | --- | --- |
-| <img src="../../public/icons/transmission.png" alt="Transmission" width="20" /> | Transmission | `transmission` | Activity queue table card<br>Status/type filtering<br>Combined downloader queue support |
-| <img src="../../public/icons/qbittorrent.png" alt="qBittorrent" width="20" /> | qBittorrent | `qbittorrent` | Activity queue table card<br>Status/type filtering<br>Combined downloader queue support |
-| <img src="../../public/icons/sabnzbd.png" alt="SABnzbd" width="20" /> | SABnzbd | `sabnzbd` | Activity queue table card<br>Status filtering<br>Combined downloader queue support |
-| <img src="../../public/icons/nzbget.svg" alt="NZBGet" width="20" /> | NZBGet | `nzbget` | Activity queue table card<br>Status filtering<br>Combined downloader queue support |
+| App | ID | Category | Support Level | Default URL |
+| --- | --- | --- | --- | --- |
+| Agregarr | `agregarr` | `Arr Suite` | Launch/settings | `http://localhost:5055` |
+| Autobrr | `autobrr` | `Arr Suite` | Overview + Widget stats | `http://localhost:7474` |
+| Bazarr | `bazarr` | `Arr Suite` | Overview + Widget stats | `http://localhost:6767` |
+| Cleanuparr | `cleanuparr` | `Arr Suite` | Widget stats | `http://localhost:11011` |
+| Huntarr | `huntarr` | `Arr Suite` | Launch/settings | `http://localhost:9705` |
+| Lidarr | `lidarr` | `Arr Suite` | Overview + Widget stats | `http://localhost:8686` |
+| Maintainerr | `maintainerr` | `Arr Suite` | Overview + Widget stats | `http://localhost:6246` |
+| Profilarr | `profilarr` | `Arr Suite` | Launch/settings | `http://localhost:6868` |
+| Radarr | `radarr` | `Arr Suite` | Overview + Widget stats | `http://localhost:7878` |
+| Readarr | `readarr` | `Arr Suite` | Overview + Widget stats | `http://localhost:8787` |
+| Sonarr | `sonarr` | `Arr Suite` | Overview + Widget stats | `http://localhost:8989` |
+| Sortarr | `sortarr` | `Arr Suite` | Launch/settings | `http://localhost:8787` |
+| Paperless-ngx | `paperless-ngx` | `Documents` | Widget stats | `http://localhost:8010` |
+| Deemix | `deemix` | `Downloaders` | Launch/settings | `http://localhost:6595` |
+| MeTube | `metube` | `Downloaders` | Overview + Widget stats | `http://localhost:8081` |
+| NZBGet | `nzbget` | `Downloaders` | Overview + Widget stats | `http://localhost:6789` |
+| SABnzbd | `sabnzbd` | `Downloaders` | Overview + Widget stats | `http://localhost:8085` |
+| Transmission | `transmission` | `Downloaders` | Overview + Widget stats | `http://localhost:9091` |
+| qBittorrent | `qbittorrent` | `Downloaders` | Overview + Widget stats | `http://localhost:8080` |
+| Actual Budget | `actual-budget` | `Finance` | Launch/settings | `http://localhost:5006` |
+| Romm | `romm` | `Games` | Overview + Widget stats | `http://localhost:8080` |
+| Jackett | `jackett` | `Indexers` | Overview + Widget stats | `http://localhost:9117` |
+| Prowlarr | `prowlarr` | `Indexers` | Overview + Widget stats | `http://localhost:9696` |
+| Tautulli | `tautulli` | `Manager` | Overview + Widget stats | `http://localhost:8181` |
+| Audiobookshelf | `audiobookshelf` | `Media` | Overview + Widget stats | `http://localhost:13378` |
+| Emby | `emby` | `Media` | Overview + Widget stats | `http://localhost:8096/web/index.html` |
+| ErsatzTV | `ersatztv` | `Media` | Launch/settings | `http://localhost:8409` |
+| Jellyfin | `jellyfin` | `Media` | Overview + Widget stats | `http://localhost:8096/web/index.html` |
+| Kometa | `kometa` | `Media` | Launch/settings | `http://localhost:4242` |
+| Pikaraoke | `pikaraoke` | `Media` | Launch/settings | `http://localhost:5555` |
+| Plex | `plex` | `Media` | Overview + Widget stats | `http://localhost:32400/web` |
+| Tdarr | `tdarr` | `Media` | Overview + Widget stats | `http://localhost:8265` |
+| Immich | `immich` | `Photos` | Overview + Widget stats | `http://localhost:2283` |
+| Pulsarr | `pulsarr` | `Requesters` | Overview + Widget stats | `http://localhost:3030` |
+| Seerr | `seerr` | `Requesters` | Overview + Widget stats | `http://localhost:5055` |
+| Glances | `glances` | `System` | Widget stats | `http://localhost:61208` |
+| Gluetun | `gluetun` | `System` | Widget stats | `http://localhost:8000` |
+| Guardian | `guardian` | `System` | Launch/settings | `http://localhost:3005` |
+| Portainer | `portainer` | `System` | Widget stats | `http://localhost:9000` |
+| Speedtest Tracker | `speedtest-tracker` | `System` | Widget stats | `http://localhost:8765` |
+| Uptime Kuma | `uptime-kuma` | `System` | Overview + Widget stats | `http://localhost:3001` |
+| Apprise | `apprise` | `Tools` | Launch/settings | `http://localhost:8000` |
+| Code Server | `code-server` | `Tools` | Launch/settings | `http://localhost:8443` |
+| Guacamole | `guacamole` | `Tools` | Launch/settings | `http://localhost:8090` |
+| Termix | `termix` | `Tools` | Launch/settings | `http://localhost:9090` |
+| The Lounge | `thelounge` | `Tools` | Launch/settings | `http://localhost:9001` |
+| Wizarr | `wizarr` | `Tools` | Overview + Widget stats | `http://localhost:5690` |
+| phpMyAdmin | `phpmyadmin` | `Tools` | Launch/settings | `http://localhost:1977` |
 
 ## Notes
 
-- Launcharr also supports custom apps with custom categories/icons.
-- Card visibility and per-role access can be controlled in `Settings -> Custom -> Dashboard` and `Settings -> Custom -> Sidebar`.
+- Built-ins are opt-in and can be enabled/disabled from app settings.
+- Custom apps are also supported with custom categories/icons.
+- Role visibility for apps/modules is configurable in settings.

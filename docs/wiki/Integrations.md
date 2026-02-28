@@ -1,64 +1,110 @@
 # Integrations
 
-## Built-in App Catalog
+Launcharr ships with a built-in app catalog from `config/default-apps.json`.
 
-| App | Icon | ID | Category | Default URL | Overview Modules Available |
-| --- | --- | --- | --- | --- | --- |
-| Plex | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/plex.png" alt="Plex" width="20" /> | `plex` | `Media` | `http://localhost:32400/web` | Yes |
-| Jellyfin | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/jellyfin.png" alt="Jellyfin" width="20" /> | `jellyfin` | `Media` | `http://localhost:8096/web/index.html` | Yes |
-| Emby | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/emby.png" alt="Emby" width="20" /> | `emby` | `Media` | `http://localhost:8096/web/index.html` | Yes |
-| Tautulli | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/tautulli.png" alt="Tautulli" width="20" /> | `tautulli` | `Manager` | `http://localhost:8181` | Yes |
-| Radarr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/radarr.png" alt="Radarr" width="20" /> | `radarr` | `Arr Suite` | `http://localhost:7878` | Yes |
-| Sonarr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/sonarr.png" alt="Sonarr" width="20" /> | `sonarr` | `Arr Suite` | `http://localhost:8989` | Yes |
-| Lidarr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/lidarr.png" alt="Lidarr" width="20" /> | `lidarr` | `Arr Suite` | `http://localhost:8686` | Yes |
-| Readarr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/readarr.png" alt="Readarr" width="20" /> | `readarr` | `Arr Suite` | `http://localhost:8787` | Yes |
-| Bazarr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/bazarr.png" alt="Bazarr" width="20" /> | `bazarr` | `Arr Suite` | `http://localhost:6767` | Yes |
-| Prowlarr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/prowlarr.png" alt="Prowlarr" width="20" /> | `prowlarr` | `Indexers` | `http://localhost:9696` | Yes |
-| Jackett | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/jackett.png" alt="Jackett" width="20" /> | `jackett` | `Indexers` | `http://localhost:9117` | Yes |
-| Pulsarr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/pulsarr.png" alt="Pulsarr" width="20" /> | `pulsarr` | `Arr Suite` | `http://localhost:3030` | Yes |
-| Seerr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/seerr.png" alt="Seerr" width="20" /> | `seerr` | `Arr Suite` | `http://localhost:5055` | Yes |
-| Autobrr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/autobrr.png" alt="Autobrr" width="20" /> | `autobrr` | `Arr Suite` | `http://localhost:7474` | Yes |
-| Maintainerr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/maintainerr.svg" alt="Maintainerr" width="20" /> | `maintainerr` | `Arr Suite` | `http://localhost:6246` | Yes |
-| Cleanuparr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/cleanuparr.png" alt="Cleanuparr" width="20" /> | `cleanuparr` | `Arr Suite` | `http://localhost:11011` | No (launch/settings only by default) |
-| Huntarr | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/huntarr.png" alt="Huntarr" width="20" /> | `huntarr` | `Arr Suite` | `http://localhost:9705` | No (launch/settings only by default) |
-| Transmission | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/transmission.png" alt="Transmission" width="20" /> | `transmission` | `Downloaders` | `http://localhost:9091` | Yes |
-| qBittorrent | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/qbittorrent.png" alt="qBittorrent" width="20" /> | `qbittorrent` | `Downloaders` | `http://localhost:8080` | Yes |
-| SABnzbd | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/sabnzbd.png" alt="SABnzbd" width="20" /> | `sabnzbd` | `Downloaders` | `http://localhost:8085` | Yes |
-| NZBGet | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/nzbget.svg" alt="NZBGet" width="20" /> | `nzbget` | `Downloaders` | `http://localhost:6789` | Yes |
-| Romm | <img src="https://raw.githubusercontent.com/MickyGX/launcharr/main/public/icons/romm.svg" alt="Romm" width="20" /> | `romm` | `Games` | `http://localhost:8080` | Yes |
+Current catalog status:
 
-## Integration Setup Pattern
+- `48` built-in app definitions.
+- Built-ins are opt-in (`removed: true`) until enabled from settings.
+- App support levels vary: full overview modules, widget stats, or launch/settings only.
 
-For each app:
+## Built-in App Catalog (Current)
+
+| App | ID | Category | Support Level | Default URL |
+| --- | --- | --- | --- | --- |
+| Agregarr | `agregarr` | `Arr Suite` | Launch/settings | `http://localhost:5055` |
+| Autobrr | `autobrr` | `Arr Suite` | Overview + Widget stats | `http://localhost:7474` |
+| Bazarr | `bazarr` | `Arr Suite` | Overview + Widget stats | `http://localhost:6767` |
+| Cleanuparr | `cleanuparr` | `Arr Suite` | Widget stats | `http://localhost:11011` |
+| Huntarr | `huntarr` | `Arr Suite` | Launch/settings | `http://localhost:9705` |
+| Lidarr | `lidarr` | `Arr Suite` | Overview + Widget stats | `http://localhost:8686` |
+| Maintainerr | `maintainerr` | `Arr Suite` | Overview + Widget stats | `http://localhost:6246` |
+| Profilarr | `profilarr` | `Arr Suite` | Launch/settings | `http://localhost:6868` |
+| Radarr | `radarr` | `Arr Suite` | Overview + Widget stats | `http://localhost:7878` |
+| Readarr | `readarr` | `Arr Suite` | Overview + Widget stats | `http://localhost:8787` |
+| Sonarr | `sonarr` | `Arr Suite` | Overview + Widget stats | `http://localhost:8989` |
+| Sortarr | `sortarr` | `Arr Suite` | Launch/settings | `http://localhost:8787` |
+| Paperless-ngx | `paperless-ngx` | `Documents` | Widget stats | `http://localhost:8010` |
+| Deemix | `deemix` | `Downloaders` | Launch/settings | `http://localhost:6595` |
+| MeTube | `metube` | `Downloaders` | Overview + Widget stats | `http://localhost:8081` |
+| NZBGet | `nzbget` | `Downloaders` | Overview + Widget stats | `http://localhost:6789` |
+| SABnzbd | `sabnzbd` | `Downloaders` | Overview + Widget stats | `http://localhost:8085` |
+| Transmission | `transmission` | `Downloaders` | Overview + Widget stats | `http://localhost:9091` |
+| qBittorrent | `qbittorrent` | `Downloaders` | Overview + Widget stats | `http://localhost:8080` |
+| Actual Budget | `actual-budget` | `Finance` | Launch/settings | `http://localhost:5006` |
+| Romm | `romm` | `Games` | Overview + Widget stats | `http://localhost:8080` |
+| Jackett | `jackett` | `Indexers` | Overview + Widget stats | `http://localhost:9117` |
+| Prowlarr | `prowlarr` | `Indexers` | Overview + Widget stats | `http://localhost:9696` |
+| Tautulli | `tautulli` | `Manager` | Overview + Widget stats | `http://localhost:8181` |
+| Audiobookshelf | `audiobookshelf` | `Media` | Overview + Widget stats | `http://localhost:13378` |
+| Emby | `emby` | `Media` | Overview + Widget stats | `http://localhost:8096/web/index.html` |
+| ErsatzTV | `ersatztv` | `Media` | Launch/settings | `http://localhost:8409` |
+| Jellyfin | `jellyfin` | `Media` | Overview + Widget stats | `http://localhost:8096/web/index.html` |
+| Kometa | `kometa` | `Media` | Launch/settings | `http://localhost:4242` |
+| Pikaraoke | `pikaraoke` | `Media` | Launch/settings | `http://localhost:5555` |
+| Plex | `plex` | `Media` | Overview + Widget stats | `http://localhost:32400/web` |
+| Tdarr | `tdarr` | `Media` | Overview + Widget stats | `http://localhost:8265` |
+| Immich | `immich` | `Photos` | Overview + Widget stats | `http://localhost:2283` |
+| Pulsarr | `pulsarr` | `Requesters` | Overview + Widget stats | `http://localhost:3030` |
+| Seerr | `seerr` | `Requesters` | Overview + Widget stats | `http://localhost:5055` |
+| Glances | `glances` | `System` | Widget stats | `http://localhost:61208` |
+| Gluetun | `gluetun` | `System` | Widget stats | `http://localhost:8000` |
+| Guardian | `guardian` | `System` | Launch/settings | `http://localhost:3005` |
+| Portainer | `portainer` | `System` | Widget stats | `http://localhost:9000` |
+| Speedtest Tracker | `speedtest-tracker` | `System` | Widget stats | `http://localhost:8765` |
+| Uptime Kuma | `uptime-kuma` | `System` | Overview + Widget stats | `http://localhost:3001` |
+| Apprise | `apprise` | `Tools` | Launch/settings | `http://localhost:8000` |
+| Code Server | `code-server` | `Tools` | Launch/settings | `http://localhost:8443` |
+| Guacamole | `guacamole` | `Tools` | Launch/settings | `http://localhost:8090` |
+| Termix | `termix` | `Tools` | Launch/settings | `http://localhost:9090` |
+| The Lounge | `thelounge` | `Tools` | Launch/settings | `http://localhost:9001` |
+| Wizarr | `wizarr` | `Tools` | Overview + Widget stats | `http://localhost:5690` |
+| phpMyAdmin | `phpmyadmin` | `Tools` | Launch/settings | `http://localhost:1977` |
+
+## Setup Pattern
+
+For each enabled app:
 
 1. Open `Settings -> [App]`.
 2. Set local/remote URL values.
-3. Add API key or auth values if required.
-4. Save and verify from app overview/activity screens.
+3. Add credentials or API keys if needed.
+4. Save and validate from dashboard, overview, or widget cards.
 
-## Plex-Specific Notes
+## Credential Notes by Integration
 
-- Plex widgets and discovery features rely on valid token + machine matching.
-- Use:
-  - `GET /api/plex/token`
-  - `GET /api/plex/machine`
-  from app settings UI actions (`Get Plex Token`, `Get Plex Machine`).
+- Plex: use `Get Plex Token` and `Get Plex Machine` in app settings.
+- Immich: requires API key (`x-api-key`) for recent assets and thumbnail proxy.
+- Audiobookshelf: requires bearer API key for recent items and cover proxy.
+- Tdarr: supports `x-api-key`; stats can work without key depending on server config.
+- Wizarr: supports optional `X-API-Key`.
+- Uptime Kuma: set `uptimeKumaSlug` for status-page API reads.
 
-## Arr, Downloader, and Games Notes
+## Overview Modules
 
-- Arr requests are proxied through Launcharr API routes.
-- Downloader queue modules are available for Transmission/qBittorrent/SABnzbd/NZBGet.
-- Indexer search modules are available for Prowlarr/Jackett.
-- Romm has integrated overview cards for `Recently Added` and `Consoles`.
-- Maintainerr has integrated overview cards for `Library Media`, `Rules` (with execute), and `Collections Media`.
-- Combined Arr/downloader sections can be toggled in display settings.
+Overview modules are currently implemented for:
+
+- Media: Plex, Jellyfin, Emby, Audiobookshelf, Tdarr.
+- Arr Suite: Radarr, Sonarr, Lidarr, Readarr, Bazarr, Autobrr, Maintainerr.
+- Requesters: Pulsarr, Seerr.
+- Indexers: Prowlarr, Jackett.
+- Downloaders: Transmission, qBittorrent, SABnzbd, NZBGet, MeTube.
+- Specialty: Romm, Immich, Wizarr, Uptime Kuma.
+- Manager: Tautulli.
+
+## Widget Stats
+
+Widget stat cards are available for a broader set than overview modules, including:
+
+- Core media/arr/downloader stack.
+- Immich, Uptime Kuma, MeTube, Audiobookshelf, Tdarr, Wizarr.
+- System services like Portainer, Glances, Speedtest Tracker, Gluetun, Paperless-ngx.
 
 ## Custom Apps
 
-Custom app support includes:
+Custom apps support:
 
-- Name, URL, and category.
-- Custom icon upload.
-- Launch mode and visibility controls.
+- Name, URL, category, and icon upload.
+- Launch mode (`iframe`, `new-tab`, `disabled`).
+- Role-aware overview/launch/settings/sidebar visibility.
 
-Custom app changes are persisted to `config/config.json`.
+Customizations are persisted in `config/config.json`.

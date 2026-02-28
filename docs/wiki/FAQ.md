@@ -12,6 +12,8 @@ Plex SSO is the main authentication path, but Launcharr also supports a local fa
 
 `admin` is required for settings access.
 
+`guest` is also supported as a dashboard/module visibility role for view-mode and access control tuning.
+
 ## Where are my settings saved?
 
 - App/category overrides: `config/config.json`
