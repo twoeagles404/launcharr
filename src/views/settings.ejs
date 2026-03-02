@@ -2008,6 +2008,7 @@
             <div class="settings-card">
               <div class="settings-card-title">System Icons</div>
               <form method="post" action="/settings/icons/upload" class="settings-form settings-images-form" data-icon-form>
+                <input type="hidden" name="_csrf" value="<%= csrfToken || '' %>" />
                 <input type="hidden" name="icon_type" value="system" />
                 <input type="hidden" name="icon_data" class="settings-icon-data" />
                 <div class="settings-row settings-row--images-upload">
@@ -2028,6 +2029,7 @@
                     <img src="<%= iconPath %>" alt="" />
                     <span><%= iconPath.split('/').pop() %></span>
                     <form method="post" action="/settings/icons/delete" class="settings-icon-delete">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken || '' %>" />
                       <input type="hidden" name="icon_type" value="system" />
                       <input type="hidden" name="icon_path" value="<%= iconPath %>" />
                       <button class="order-button" type="submit" title="Delete icon" aria-label="Delete icon">&times;</button>
@@ -2040,6 +2042,7 @@
             <div class="settings-card">
               <div class="settings-card-title">App Icons</div>
               <form method="post" action="/settings/icons/upload" class="settings-form settings-images-form" data-icon-form>
+                <input type="hidden" name="_csrf" value="<%= csrfToken || '' %>" />
                 <input type="hidden" name="icon_type" value="app" />
                 <input type="hidden" name="icon_data" class="settings-icon-data" />
                 <div class="settings-row settings-row--images-upload">
@@ -2060,6 +2063,7 @@
                     <img src="<%= iconPath %>" alt="" />
                     <span><%= iconPath.split('/').pop() %></span>
                     <form method="post" action="/settings/icons/delete" class="settings-icon-delete">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken || '' %>" />
                       <input type="hidden" name="icon_type" value="app" />
                       <input type="hidden" name="icon_path" value="<%= iconPath %>" />
                       <button class="order-button" type="submit" title="Delete icon" aria-label="Delete icon">&times;</button>
@@ -3340,8 +3344,23 @@
       ? requestedTab
       : (hasStored ? storedTab : 'general');
     setActiveTab(initialTab, false);
-    if (queryParams.get('iconError') === '1') {
-      showDebug('Icon name is required for uploads.');
+    const iconError = String(queryParams.get('iconError') || '').trim().toLowerCase();
+    if (iconError) {
+      if (iconError === '1' || iconError === 'name-required') {
+        showDebug('Icon name is required for uploads.');
+      } else if (iconError === 'image-required') {
+        showDebug('Choose an image before uploading.');
+      } else if (iconError === 'image-type') {
+        showDebug('Unsupported image type. Use PNG, JPG, SVG, or WEBP.');
+      } else if (iconError === 'image-invalid') {
+        showDebug('Unable to process the selected image. Try another file.');
+      } else if (iconError === 'write-failed') {
+        showDebug('Icon upload failed while writing to disk. Check container write permissions for custom icons.');
+      } else {
+        showDebug('Icon upload failed. Check the Logs tab for details.');
+      }
+    } else if (String(queryParams.get('iconResult') || '').trim().toLowerCase() === 'uploaded') {
+      showDebug('Icon uploaded successfully.');
     }
 
     tabButtons.forEach((btn) => {

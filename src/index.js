@@ -1127,9 +1127,9 @@ function slugifyId(value) {
 }
 
 function saveCustomIcon(iconDataUrl, targetDir, nameHint = '') {
-  if (!iconDataUrl) return { iconPath: '' };
-  const match = String(iconDataUrl).match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
-  if (!match) return { iconPath: '' };
+  if (!iconDataUrl) return { ok: false, iconPath: '', error: 'missing-icon-data' };
+  const match = String(iconDataUrl).match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,([A-Za-z0-9+/=]+)$/);
+  if (!match) return { ok: false, iconPath: '', error: 'invalid-data-url' };
   const mime = match[1].toLowerCase();
   const data = match[2];
   const extMap = {
@@ -1140,19 +1140,25 @@ function saveCustomIcon(iconDataUrl, targetDir, nameHint = '') {
     'image/webp': 'webp',
   };
   const ext = extMap[mime];
-  if (!ext) return { iconPath: '' };
+  if (!ext) return { ok: false, iconPath: '', error: 'unsupported-mime' };
   const baseName = String(nameHint || '').replace(/\.[^/.]+$/, '').trim();
   const nameSlug = slugifyId(baseName);
-  if (!nameSlug) return { iconPath: '' };
+  if (!nameSlug) return { ok: false, iconPath: '', error: 'invalid-icon-name' };
+  let buffer = null;
+  try {
+    buffer = Buffer.from(data, 'base64');
+  } catch (_err) {
+    return { ok: false, iconPath: '', error: 'decode-failed' };
+  }
+  if (!buffer || !buffer.length) return { ok: false, iconPath: '', error: 'empty-image-data' };
   try {
     if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
     const filename = `${nameSlug}.${ext}`;
     const fullPath = path.join(targetDir, filename);
-    const buffer = Buffer.from(data, 'base64');
     fs.writeFileSync(fullPath, buffer);
-    return { iconPath: filename };
+    return { ok: true, iconPath: filename, error: '' };
   } catch (err) {
-    return { iconPath: '' };
+    return { ok: false, iconPath: '', error: 'write-failed', detail: String(err?.message || '').trim() };
   }
 }
 
@@ -5932,8 +5938,38 @@ function getDefaultSystemIconOptions(apps = []) {
 }
 
 function getCustomSystemIconOptions() {
+  migrateMisplacedCustomIcons();
   const dir = path.join(__dirname, '..', 'public', 'icons', 'custom', 'system');
   return listIconFiles(dir, '/icons/custom/system');
+}
+
+function migrateMisplacedCustomIcons() {
+  const misplacedRoot = path.join(__dirname, 'public', 'icons', 'custom');
+  const correctRoot = path.join(__dirname, '..', 'public', 'icons', 'custom');
+  const migrateBucket = (bucketName) => {
+    const sourceDir = path.join(misplacedRoot, bucketName);
+    const targetDir = path.join(correctRoot, bucketName);
+    try {
+      if (!fs.existsSync(sourceDir)) return;
+      if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
+      fs.readdirSync(sourceDir).forEach((name) => {
+        const sourcePath = path.join(sourceDir, name);
+        const stat = fs.statSync(sourcePath);
+        if (!stat.isFile()) return;
+        if (!/\.(svg|png|jpe?g|webp)$/i.test(name)) return;
+        const targetPath = path.join(targetDir, name);
+        if (fs.existsSync(targetPath)) {
+          fs.unlinkSync(sourcePath);
+          return;
+        }
+        fs.renameSync(sourcePath, targetPath);
+      });
+    } catch (_err) {
+      // ignore migration issues and continue with listing
+    }
+  };
+  migrateBucket('apps');
+  migrateBucket('system');
 }
 
 function migrateLegacyCustomAppIcons() {
@@ -5993,6 +6029,7 @@ function getDefaultAppIconOptions(apps = []) {
 }
 
 function getCustomAppIconOptions() {
+  migrateMisplacedCustomIcons();
   migrateLegacyCustomAppIcons();
   const appsDir = path.join(__dirname, '..', 'public', 'icons', 'custom', 'apps');
   return listIconFiles(appsDir, '/icons/custom/apps');

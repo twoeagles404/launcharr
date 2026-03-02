@@ -5,6 +5,8 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const PROJECT_ROOT = path.join(__dirname, '..', '..');
+const PUBLIC_DIR = path.join(PROJECT_ROOT, 'public');
 
 export function registerSettings(app, ctx) {
   const {
@@ -3093,14 +3095,44 @@ app.post('/settings/icons/upload', requireSettingsAdmin, (req, res) => {
   const iconName = String(req.body?.icon_name || '').trim();
   const iconBase = iconName.replace(/\.[^/.]+$/, '').trim();
   if (!iconBase) {
-    res.redirect('/settings?tab=custom&iconError=1');
+    res.redirect('/settings?tab=custom&subtab=images&iconError=name-required');
+    return;
+  }
+  if (!iconData) {
+    res.redirect('/settings?tab=custom&subtab=images&iconError=image-required');
     return;
   }
   const targetDir = iconType === 'app'
-    ? path.join(__dirname, '..', 'public', 'icons', 'custom', 'apps')
-    : path.join(__dirname, '..', 'public', 'icons', 'custom', 'system');
-  saveCustomIcon(iconData, targetDir, iconBase);
-  res.redirect('/settings?tab=custom');
+    ? path.join(PUBLIC_DIR, 'icons', 'custom', 'apps')
+    : path.join(PUBLIC_DIR, 'icons', 'custom', 'system');
+  const result = saveCustomIcon(iconData, targetDir, iconBase);
+  if (!result?.ok || !result?.iconPath) {
+    const errorCodeMap = {
+      'missing-icon-data': 'image-required',
+      'invalid-data-url': 'image-invalid',
+      'unsupported-mime': 'image-type',
+      'invalid-icon-name': 'name-required',
+      'decode-failed': 'image-invalid',
+      'empty-image-data': 'image-invalid',
+      'write-failed': 'write-failed',
+    };
+    const iconError = errorCodeMap[String(result?.error || '').trim()] || 'upload-failed';
+    pushLog({
+      level: 'error',
+      app: 'settings',
+      action: 'icons.upload',
+      message: 'Failed to upload custom icon.',
+      meta: {
+        iconType,
+        iconName: iconBase,
+        error: String(result?.error || 'unknown').trim() || 'unknown',
+        detail: String(result?.detail || '').trim(),
+      },
+    });
+    res.redirect(`/settings?tab=custom&subtab=images&iconError=${encodeURIComponent(iconError)}`);
+    return;
+  }
+  res.redirect('/settings?tab=custom&subtab=images&iconResult=uploaded');
 });
 
 app.post('/settings/icons/delete', requireSettingsAdmin, (req, res) => {
@@ -3110,7 +3142,7 @@ app.post('/settings/icons/delete', requireSettingsAdmin, (req, res) => {
     ? ['/icons/custom/apps', '/icons/custom']
     : ['/icons/custom/system'];
   deleteCustomIcon(iconPath, allowedBases);
-  res.redirect('/settings?tab=custom');
+  res.redirect('/settings?tab=custom&subtab=images');
 });
 
 app.post('/settings/general', requireSettingsAdmin, (req, res) => {
@@ -3374,7 +3406,7 @@ app.post('/settings/custom-apps/delete', requireSettingsAdmin, (req, res) => {
     if (!appItem || !isCustomAppRecord(appItem, defaultAppIdSet)) return res.status(404).json({ error: 'Custom app not found.' });
 
     if (appItem.icon && appItem.icon.startsWith('/icons/custom/')) {
-      const iconPath = path.join(__dirname, '..', 'public', appItem.icon.replace(/^\/+/, ''));
+      const iconPath = path.join(PUBLIC_DIR, appItem.icon.replace(/^\/+/, ''));
       if (fs.existsSync(iconPath)) {
         try {
           fs.unlinkSync(iconPath);
@@ -3427,7 +3459,7 @@ app.post('/settings/custom-apps/update', requireSettingsAdmin, (req, res) => {
     let iconValue = current.icon || '';
     if (iconPath) {
       if (iconValue.startsWith('/icons/custom/')) {
-        const iconFile = path.join(__dirname, '..', 'public', iconValue.replace(/^\/+/, ''));
+        const iconFile = path.join(PUBLIC_DIR, iconValue.replace(/^\/+/, ''));
         if (fs.existsSync(iconFile)) {
           try {
             fs.unlinkSync(iconFile);
@@ -3439,10 +3471,10 @@ app.post('/settings/custom-apps/update', requireSettingsAdmin, (req, res) => {
       iconValue = iconPath;
     } else if (iconData) {
       if (iconValue.startsWith('/icons/custom/')) {
-        const iconPath = path.join(__dirname, '..', 'public', iconValue.replace(/^\/+/, ''));
-        if (fs.existsSync(iconPath)) {
+        const previousIconPath = path.join(PUBLIC_DIR, iconValue.replace(/^\/+/, ''));
+        if (fs.existsSync(previousIconPath)) {
           try {
-            fs.unlinkSync(iconPath);
+            fs.unlinkSync(previousIconPath);
           } catch (err) {
             // ignore delete errors
           }

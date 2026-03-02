@@ -17,6 +17,8 @@
 - Fixed qBittorrent widget false-offline behavior by adding WebUI login/session-cookie flow for authenticated instances.
 - Fixed widget-stats access for widget-only apps (for example, QNAP) when app visibility is granted through widget bars.
 - Fixed deployment-summary app counting to include stat types that use fallback metadata.
+- Fixed custom icon uploads not appearing in settings by correcting upload/delete filesystem paths and CSRF form coverage.
+- Added migration for previously misplaced custom icon files plus clearer icon-upload error diagnostics.
 - [Security]
 - Added rate limiting for failed setup submissions (`POST /setup`).
 - Added rate limiting for Plex PIN status polling (`GET /api/plex/pin/status`).
