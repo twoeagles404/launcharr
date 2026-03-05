@@ -1,7 +1,7 @@
 services:
   launcharr:
     container_name: launcharr
-    image: mickygx/launcharr:development #latest for more stable version
+    image: mickygx/launcharr:latest #use :development for edge/dev builds
     ports:
       - "3333:3333"
     environment:
@@ -10,6 +10,8 @@ services:
       - BASE_URL=http://localhost:3333
       - TRUST_PROXY=true
       - TRUST_PROXY_HOPS=1
+      # Generate once: openssl rand -hex 32
+      - SESSION_SECRET=replace-this-with-a-random-secret
       # optional but recommended if you only use HTTPS on domain:
       # - COOKIE_SECURE=true
       # - PUID=${PUID}

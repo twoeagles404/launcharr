@@ -8,18 +8,29 @@
 
 ## Option A: Docker Run
 
+Generate a persistent session secret once (pick one):
+
+- `openssl rand -hex 32`
+- `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+
 ```bash
+# Example:
+# SESSION_SECRET="$(openssl rand -hex 32)"
+
 docker run -d \
   --name=launcharr \
   --restart unless-stopped \
   -p 3333:3333 \
   -e CONFIG_PATH=/app/config/config.json \
   -e DATA_DIR=/app/data \
-  -e SESSION_SECRET=replace-this \
+  -e BASE_URL=http://localhost:3333 \
+  -e TRUST_PROXY=true \
+  -e TRUST_PROXY_HOPS=1 \
+  -e SESSION_SECRET=replace-this-with-your-generated-secret \
   -v ./config:/app/config \
   -v ./data:/app/data \
   -v ./data/icons/custom:/app/public/icons/custom \
-  mickygx/launcharr:development
+  mickygx/launcharr:latest
 ```
 
 ## Option B: Docker Compose
@@ -27,14 +38,20 @@ docker run -d \
 ```yaml
 services:
   launcharr:
-    image: mickygx/launcharr:development
+    image: mickygx/launcharr:latest
     container_name: launcharr
     ports:
       - "3333:3333"
     environment:
       - CONFIG_PATH=/app/config/config.json
       - DATA_DIR=/app/data
-      - SESSION_SECRET=replace-this
+      - BASE_URL=http://localhost:3333
+      - TRUST_PROXY=true
+      - TRUST_PROXY_HOPS=1
+      # Generate once: openssl rand -hex 32
+      - SESSION_SECRET=replace-this-with-your-generated-secret
+      # Optional if only served over HTTPS:
+      # - COOKIE_SECURE=true
     volumes:
       - ./config:/app/config
       - ./data:/app/data
@@ -60,8 +77,12 @@ docker compose up -d
 
 - Start from `docker-compose.traefik.example.yml`.
 - Replace `launcharr.example.com` with your domain.
-- Set `Settings -> General -> Remote URL` to your public URL.
-- If behind HTTPS, set `COOKIE_SECURE=true`.
+- Set `BASE_URL` in the Traefik compose file to your public URL (`https://...`).
+- Start with:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.traefik.example.yml up -d
+```
 
 ## Local Development
 
