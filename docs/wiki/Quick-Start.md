@@ -30,7 +30,7 @@ docker run -d \
   -v ./config:/app/config \
   -v ./data:/app/data \
   -v ./data/icons/custom:/app/public/icons/custom \
-  mickygx/launcharr:latest
+  ghcr.io/twoeagles404/launcharr:latest
 ```
 
 ## Option B: Docker Compose
@@ -38,7 +38,7 @@ docker run -d \
 ```yaml
 services:
   launcharr:
-    image: mickygx/launcharr:latest
+    image: ghcr.io/twoeagles404/launcharr:latest     
     container_name: launcharr
     ports:
       - "3333:3333"
@@ -48,10 +48,8 @@ services:
       - BASE_URL=http://localhost:3333
       - TRUST_PROXY=true
       - TRUST_PROXY_HOPS=1
-      # Generate once: openssl rand -hex 32
       - SESSION_SECRET=replace-this-with-your-generated-secret
-      # Optional if only served over HTTPS:
-      # - COOKIE_SECURE=true
+      # - COOKIE_SECURE=true   # uncomment only if actually using HTTPS
     volumes:
       - ./config:/app/config
       - ./data:/app/data
