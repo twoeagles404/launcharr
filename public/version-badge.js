@@ -67,6 +67,24 @@
     '"': '&quot;',
     "'": '&#039;',
   }[char]));
+  const renderReleaseHighlightDetail = (value) => {
+    const input = String(value || '').trim();
+    if (!input) return '';
+    const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/gi;
+    let result = '';
+    let cursor = 0;
+    let match = linkPattern.exec(input);
+    while (match) {
+      result += escapeHtml(input.slice(cursor, match.index));
+      const label = escapeHtml(match[1]);
+      const href = escapeHtml(match[2]);
+      result += `<a class="release-welcome-inline-link" href="${href}" target="_blank" rel="noreferrer noopener">${label}</a>`;
+      cursor = match.index + match[0].length;
+      match = linkPattern.exec(input);
+    }
+    result += escapeHtml(input.slice(cursor));
+    return result;
+  };
   const buildReleaseUrl = (versionTag) => releaseBase + encodeURIComponent(String(versionTag || '').trim());
 
   const maybeShowReleaseWelcome = ({ current, highlights, releaseNotesUrl }) => {
@@ -96,7 +114,7 @@
       const sectionClass = ['added', 'changed', 'fixed'].includes(sectionKey)
         ? ` release-welcome-tag--${sectionKey}`
         : '';
-      return { section, detail, sectionClass };
+      return { section, detailHtml: renderReleaseHighlightDetail(detail), sectionClass };
     });
     const effectiveReleaseNotesUrl = String(releaseNotesUrl || '').trim() || buildReleaseUrl(versionTag);
 
@@ -126,7 +144,7 @@
                     .map((item) => (
                       '<li class="release-welcome-item">' +
                         `<span class="release-welcome-tag${item.sectionClass}">${escapeHtml(item.section)}</span>` +
-                        `<span class="release-welcome-text">${escapeHtml(item.detail)}</span>` +
+                        `<span class="release-welcome-text">${item.detailHtml}</span>` +
                       '</li>'
                     ))
                     .join('') +

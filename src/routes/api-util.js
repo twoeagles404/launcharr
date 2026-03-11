@@ -127,7 +127,7 @@ export function registerApiUtil(app, ctx) {
   app.get('/api/version', requireUser, async (_req, res) => {
     const current = normalizeVersionTag(APP_VERSION || '');
     const releaseNotesUrl = buildReleaseNotesUrl(current);
-    const highlights = loadReleaseHighlights(current);
+    const highlights = loadReleaseHighlights(current, { preserveLinks: true });
     const now = Date.now();
     if (ctx.versionCache.payload && (now - ctx.versionCache.fetchedAt) < VERSION_CACHE_TTL_MS) {
       return res.json({ ...ctx.versionCache.payload, current, releaseNotesUrl, highlights });

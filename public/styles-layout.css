@@ -1426,6 +1426,17 @@ html[data-hide-scrollbars="1"] .dash-main::-webkit-scrollbar{
   font-weight:700;
 }
 
+.release-welcome-inline-link{
+  color:var(--brand);
+  text-decoration:underline;
+  text-decoration-thickness:2px;
+  text-underline-offset:2px;
+}
+
+.release-welcome-inline-link:hover{
+  opacity:.9;
+}
+
 .release-welcome-footer{
   flex-wrap:wrap;
   justify-content:flex-end;

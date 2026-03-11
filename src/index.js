@@ -5135,10 +5135,13 @@ function buildReleaseNotesUrl(versionTag) {
   return `${RELEASE_NOTES_BASE_URL}${encodeURIComponent(normalized)}`;
 }
 
-function stripMarkdownInline(value) {
+function stripMarkdownInline(value, options = {}) {
+  const preserveLinks = options && options.preserveLinks === true;
   let text = String(value || '').trim();
   if (!text) return '';
-  text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  if (!preserveLinks) {
+    text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  }
   text = text.replace(/`([^`]+)`/g, '$1');
   text = text.replace(/\*\*([^*]+)\*\*/g, '$1');
   text = text.replace(/\*([^*]+)\*/g, '$1');
@@ -5151,6 +5154,7 @@ function loadReleaseHighlights(versionTag, options = {}) {
   if (!normalized) return [];
   const maxItemsRaw = Number(options.maxItems);
   const maxItems = Number.isFinite(maxItemsRaw) ? Math.max(1, Math.min(20, maxItemsRaw)) : RELEASE_HIGHLIGHT_LIMIT;
+  const preserveLinks = options && options.preserveLinks === true;
   const sectionSet = new Set(RELEASE_HIGHLIGHT_SECTIONS.map((section) => section.toLowerCase()));
   const releaseFilePath = path.join(RELEASE_NOTES_DIR, `${normalized}.md`);
   if (!fs.existsSync(releaseFilePath)) return [];
@@ -5176,7 +5180,7 @@ function loadReleaseHighlights(versionTag, options = {}) {
       if (!activeSection) continue;
       const bulletMatch = line.match(/^\s*-\s+(.+?)\s*$/);
       if (!bulletMatch) continue;
-      const bulletText = stripMarkdownInline(bulletMatch[1]);
+      const bulletText = stripMarkdownInline(bulletMatch[1], { preserveLinks });
       if (!bulletText) continue;
       highlights.push(`${activeSection}: ${bulletText}`);
       if (highlights.length >= maxItems) break;
