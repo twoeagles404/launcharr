@@ -1,4 +1,37 @@
-# Release Notes (v0.1.0 -> v0.2.45)
+# Release Notes (v0.1.0 -> v0.2.48)
+
+## v0.2.48 (2026-03-16)
+
+- [Added]
+- Added built-in `unRAID` app support with default metadata, dedicated icon asset, and multi-instance placeholder text for server-style deployments.
+- Added an `unraid` widget integration that polls the Unraid GraphQL API with an API key and exposes CPU, memory, array, and alert metrics for widget bars.
+- [Fixed]
+- Fixed `Settings -> Apps` so unRAID shows the same API-key access form as the per-app settings page instead of omitting the credential field on that surface.
+- Improved unRAID widget compatibility by probing multiple GraphQL memory-field shapes before marking the widget offline.
+
+## v0.2.47 (2026-03-12)
+
+- [Added]
+- Added Plex settings token-resolution helpers plus automated tests for primary and secondary Plex instance selection.
+- [Changed]
+- Updated Plex-specific settings, dashboard, and deep-launch handling to recognize Plex multi-instance app IDs via base-app detection.
+- Updated `Get Plex Token` and `Get Plex Machine` settings actions to target the selected Plex app instance instead of always using the primary `plex` app.
+- [Fixed]
+- Fixed secondary Plex instances resolving the wrong server token from the primary Plex session context.
+- Fixed Plex-specific dashboard/settings behavior that only activated for the literal `plex` app ID, which caused gaps for instance IDs such as `plex-2`.
+
+## v0.2.46 (2026-03-11)
+
+- [Added]
+- Added built-in `Curatorr` app support with dedicated icon assets plus default launch subpages for Dashboard, History, Artists, Discover, Tracks, Playlists, and admin Settings.
+- Added role-aware submenu link normalization so apps can expose custom launch destinations directly from the Launcharr sidebar.
+- [Changed]
+- Updated app launch routing so apps that hide the default Launch link can redirect `/apps/:id/launch` to their configured default submenu page.
+- Updated launch-page chrome to show the active submenu label in the window title and keep submenu navigation highlighted.
+- Updated embedded Curatorr launches to pass Launcharr theme and square-corner preferences into the iframe and resync them after appearance changes.
+- [Fixed]
+- Fixed invalid or unauthorized app `?page=` launch targets so they fall back to the configured default submenu instead of leaving hidden routes stranded.
+- Fixed embedded Curatorr theme drift after Launcharr day/night or square-corner preference changes.
 
 ## v0.2.45 (2026-03-05)
 

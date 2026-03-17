@@ -156,6 +156,7 @@ const WIDGET_STAT_TYPES = [
   { typeId: 'traefik',         name: 'Traefik',         icon: '/icons/traefik.svg',         metricFields: [{ key: 'routers', label: 'Routers' }, { key: 'services', label: 'Services' }, { key: 'middlewares', label: 'Middlewares' }] },
   { typeId: 'dozzle',          name: 'Dozzle',          icon: '/icons/dozzle.svg',          metricFields: [{ key: 'running', label: 'Running' }] },
   { typeId: 'qnap',            name: 'QNAP',            icon: '/icons/qnap.svg',            metricFields: [{ key: 'cpu', label: 'CPU' }, { key: 'memory', label: 'Memory' }, { key: 'volume', label: 'Volume' }] },
+  { typeId: 'unraid',          name: 'unRAID',          icon: '/icons/unraid.png',          metricFields: [{ key: 'cpu', label: 'CPU' }, { key: 'memory', label: 'Memory' }, { key: 'array', label: 'Array' }, { key: 'notifications', label: 'Alerts' }] },
 ];
 const WIDGET_STAT_TYPE_BY_ID = new Map(WIDGET_STAT_TYPES.map((t) => [t.typeId, t]));
 
@@ -5135,10 +5136,13 @@ function buildReleaseNotesUrl(versionTag) {
   return `${RELEASE_NOTES_BASE_URL}${encodeURIComponent(normalized)}`;
 }
 
-function stripMarkdownInline(value) {
+function stripMarkdownInline(value, options = {}) {
+  const preserveLinks = options && options.preserveLinks === true;
   let text = String(value || '').trim();
   if (!text) return '';
-  text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  if (!preserveLinks) {
+    text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  }
   text = text.replace(/`([^`]+)`/g, '$1');
   text = text.replace(/\*\*([^*]+)\*\*/g, '$1');
   text = text.replace(/\*([^*]+)\*/g, '$1');
@@ -5151,6 +5155,7 @@ function loadReleaseHighlights(versionTag, options = {}) {
   if (!normalized) return [];
   const maxItemsRaw = Number(options.maxItems);
   const maxItems = Number.isFinite(maxItemsRaw) ? Math.max(1, Math.min(20, maxItemsRaw)) : RELEASE_HIGHLIGHT_LIMIT;
+  const preserveLinks = options && options.preserveLinks === true;
   const sectionSet = new Set(RELEASE_HIGHLIGHT_SECTIONS.map((section) => section.toLowerCase()));
   const releaseFilePath = path.join(RELEASE_NOTES_DIR, `${normalized}.md`);
   if (!fs.existsSync(releaseFilePath)) return [];
@@ -5176,7 +5181,7 @@ function loadReleaseHighlights(versionTag, options = {}) {
       if (!activeSection) continue;
       const bulletMatch = line.match(/^\s*-\s+(.+?)\s*$/);
       if (!bulletMatch) continue;
-      const bulletText = stripMarkdownInline(bulletMatch[1]);
+      const bulletText = stripMarkdownInline(bulletMatch[1], { preserveLinks });
       if (!bulletText) continue;
       highlights.push(`${activeSection}: ${bulletText}`);
       if (highlights.length >= maxItems) break;
@@ -5297,6 +5302,7 @@ function getNavApps(apps, role, req, categoryOrder = DEFAULT_CATEGORY_ORDER, gen
         icon: resolvedIcon,
         launchMode: resolveAppLaunchMode(appItem, normalizeMenu(appItem)),
         effectiveLaunchMode: resolveEffectiveLaunchMode(appItem, req),
+        submenuLinks: normalizeAppSubmenuLinks(appItem, role),
         menuAccess,
       };
     })
@@ -5592,6 +5598,38 @@ function canAccessSidebarActivity(appItem, role) {
   return canRoleAccessMenuSection(menu.sidebarActivity, roleKey, 'disabled');
 }
 
+function normalizeAppSubmenuLinks(appItem, role) {
+  const roleKey = parseVisibilityRole(role);
+  if (!appItem || appItem.removed || !roleKey) return [];
+  const links = Array.isArray(appItem.submenuLinks) ? appItem.submenuLinks : [];
+  return links
+    .map((item, index) => {
+      const entry = item && typeof item === 'object' ? item : {};
+      const id = String(entry.id || entry.key || entry.page || '').trim().toLowerCase();
+      const label = String(entry.label || entry.name || entry.title || '').trim();
+      const path = String(entry.path || entry.href || '').trim();
+      const icon = String(entry.icon || entry.iconPath || '').trim();
+      const minRole = parseVisibilityRole(entry.minRole || entry.role || '') || 'user';
+      const minRank = Number(VISIBILITY_ROLE_RANK[minRole]);
+      const roleRank = Number(VISIBILITY_ROLE_RANK[roleKey]);
+      if (!id || !label || !path) return null;
+      if (!Number.isFinite(minRank) || !Number.isFinite(roleRank) || roleRank < minRank) return null;
+      return {
+        id,
+        label,
+        path,
+        icon: icon || '/icons/launch.svg',
+        order: Number.isFinite(Number(entry.order)) ? Number(entry.order) : index + 1,
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => {
+      const orderDelta = a.order - b.order;
+      if (orderDelta !== 0) return orderDelta;
+      return String(a.label || '').localeCompare(String(b.label || ''));
+    });
+}
+
 function getMenuAccess(appItem, role) {
   if (appItem?.removed) {
     return {
@@ -5697,6 +5735,27 @@ function normalizeMenu(appItem) {
     launch: launchRole,
     settings: settingsRole,
   });
+}
+
+function resolveAppSubmenuLink(appItem, role, linkId = '') {
+  const targetId = String(linkId || '').trim().toLowerCase();
+  if (!targetId) return null;
+  return normalizeAppSubmenuLinks(appItem, role).find((item) => item.id === targetId) || null;
+}
+
+function resolveAppSubmenuLaunchUrl(appItem, req, submenuLink = null) {
+  const baseUrl = String(resolveLaunchUrl(appItem, req) || '').trim();
+  if (!baseUrl) return '';
+  const path = String(submenuLink?.path || '').trim();
+  if (!path) return baseUrl;
+  if (/^https?:\/\//i.test(path)) return path;
+  try {
+    const normalizedBase = new URL(baseUrl);
+    if (!normalizedBase.pathname.endsWith('/')) normalizedBase.pathname = `${normalizedBase.pathname.replace(/\/+$/, '')}/`;
+    return new URL(path.replace(/^\/+/, ''), normalizedBase).toString();
+  } catch (_err) {
+    return baseUrl;
+  }
 }
 
 function getOverviewElements(appItem) {
@@ -6966,7 +7025,7 @@ async function resolveDeepLaunchUrl(appItem, req, options = {}) {
     return base.replace(/\/+$/, '') + '/search?query=' + encodeURIComponent(effectiveQuery);
   }
 
-  if (appItem?.id === 'plex') {
+  if (getAppBaseId(appItem?.id) === 'plex') {
     let url = launchUrl;
     if (!/^https?:\/\//i.test(url)) url = 'http://' + url;
     try {
@@ -10083,6 +10142,8 @@ const _routeCtx = {
   resolveRoleAwareLaunchUrl,
   resolveEffectiveLaunchMode,
   resolveIframeLaunchUrl,
+  resolveAppSubmenuLink,
+  resolveAppSubmenuLaunchUrl,
   hasEmbeddedUrlCredentials,
   stripUrlEmbeddedCredentials,
   buildRommCookiePrimingPlan,
